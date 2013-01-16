@@ -1,0 +1,61 @@
+NAME
+    PerlIO::via::Limit - PerlIO layer for length restrictions
+
+SYNOPSIS
+        use PerlIO::via::Limit;
+        PerlIO::via::Limit->length(20);
+        # - or -
+        use PerlIO::via::Limit length => 20;
+
+        # reading
+        open( my $fh, "<:via(Limit)", $file );
+
+        # writing
+        open( my $fh, ">:via(Limit)", $file );
+
+DESCRIPTION
+    PerlIO::via::Limit implements a PerlIO layer that restricts length of
+    stream.
+
+CLASS METHODS
+  length
+    Limit length of stream. Default is undef that means unlimited.
+
+  sensitive
+    If set true value, an exception will be occurred when stream reaches
+    limit of length. Default is false.
+
+        use PerlIO::via::Limit sensitive => 1;
+
+        open( my $in, "<:via(Limit)", $file ) or die;
+        eval {
+            while( <$in> ){
+                # do something...
+            }
+        };if( $@ ){
+            # "$in is trying to read exceeding the limit."
+            warn "$@";
+        }
+        close $in or die;
+
+    Note that the $@ is a Exception::Class object.
+
+BUGS
+    When the exception is thrown by sensitive option, the buffer for reading
+    does not be filled.
+
+SEE ALSO
+    PerlIO::via
+
+    Exception::Class
+
+REPOSITORY
+    PerlIO::via::Limit is hosted on github
+    <https://github.com/hiroaki/PerlIO-via-Limit>
+
+AUTHOR
+    WATANABE Hiroaki <hwat@cpan.org>
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
